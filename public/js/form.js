@@ -7,31 +7,33 @@ $(document).on('ready', function () {
         format: 'yyyy-mm-dd'
     });
 
-    updateInputs();
+    sendRequestAndUpdateInputs();
 
 
     $('#departureDateDiv').on("changeDate", function () {
-        $('#departureDate').val(
-            $('#departureDateDiv').datepicker('getFormattedDate')
-        );
-
-        updateInputs();
+        updateDepartureDate();
+        sendRequestAndUpdateInputs();
     });
 
 
     $('#regionSelect').on('change', function () {
-        updateInputs();
+        sendRequestAndUpdateInputs();
     });
 
 
-    function updateInputs() {
+    function updateDepartureDate() {
+        $('#departureDate').val(
+            $('#departureDateDiv').datepicker('getFormattedDate')
+        );
+    }
 
+
+    function sendRequestAndUpdateInputs() {
         getData().done(function(data) {
             data = JSON.parse(data);
             updateCouriers(data.available_couriers);
             updateDates(data.arrival_date, data.return_date);
         });
-
     }
 
 
@@ -46,7 +48,6 @@ $(document).on('ready', function () {
 
 
     function updateCouriers(courierIds) {
-
         $('#courierSelect > option').each(function() {
             if (courierIds.indexOf($(this).val() * 1) === -1) {
                 $(this).attr('disabled', true);
@@ -54,15 +55,12 @@ $(document).on('ready', function () {
         })
 
         $('.selectpicker').selectpicker('refresh');
-
     }
 
 
     function updateDates(arrivalDate, returnDate) {
-
         $('#arrivalDate').val(arrivalDate);
         $('#returnDate').val(returnDate);
-
     }
 
 
