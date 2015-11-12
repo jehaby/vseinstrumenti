@@ -89,20 +89,4 @@ class MainController extends Controller
 //                         );
     }
 
-
-    public function getTest(Request $request)
-    {
-
-
-        dd($this->getAvailableCouriers('2015-11-01', '2015-11-02'));
-
-        $courierIds = \DB::table('couriers')->lists('id');
-
-        $f = new TripFactory();
-
-        $f->test();
-
-        $f->createTrip(1, 1, Carbon::now());
-
-    }
 }
