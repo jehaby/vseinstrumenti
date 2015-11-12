@@ -1,6 +1,6 @@
 ## Установка ##
 
-1. `git clone github.com/jehaby/Cognitive`
+1. `git clone github.com/jehaby/vseinstrumenti`
 
 2. `composer install`
 
