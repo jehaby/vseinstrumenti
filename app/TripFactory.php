@@ -10,8 +10,18 @@ class TripFactory
 {
 
 
-    public function createTrip($courier_id, $region_id, Carbon $departure_date)
+    /**
+     * @param int $courier_id
+     * @param int $region_id
+     * @param Carbon | string $departure_date
+     * @return Trip
+     */
+    public function createTrip($courier_id, $region_id, $departure_date)
     {
+
+        if (! $departure_date instanceof Carbon) {
+            $departure_date = Carbon::createFromFormat('Y-m-d', $departure_date);
+        }
 
         $regions = Region::all();
 

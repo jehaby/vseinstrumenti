@@ -7,6 +7,7 @@ $(document).on('ready', function () {
         format: 'yyyy-mm-dd'
     });
 
+
     sendRequestAndUpdateInputs();
 
 
@@ -48,19 +49,53 @@ $(document).on('ready', function () {
 
 
     function updateCouriers(courierIds) {
-        $('#courierSelect > option').each(function() {
-            if (courierIds.indexOf($(this).val() * 1) === -1) {
-                $(this).attr('disabled', true);
-            }
-        })
 
-        $('.selectpicker').selectpicker('refresh');
+        if (! courierIds.length) {
+            showErrors(['Для данной даты и региона нет доступных курьеров.']);
+            disableForm();
+            $('#courierSelect').attr('disabled', true);
+        } else {
+
+            $('#courierSelect > option').each(function() {
+                $(this).attr(
+                    'disabled',
+                    (courierIds.indexOf($(this).val() * 1) === -1) ? true : false
+                );
+            });
+
+            $('#courierSelect').val(courierIds[0]).attr('disabled', false);;
+            hideErrors();
+            enableForm();
+        }
+
+        $('#courierSelect').selectpicker('refresh');
     }
 
 
     function updateDates(arrivalDate, returnDate) {
         $('#arrivalDate').val(arrivalDate);
         $('#returnDate').val(returnDate);
+    }
+
+
+    function showErrors(messages) {
+        console.log('showErrors works');
+        $('#errors').removeClass('hidden').empty();
+        messages.forEach(function(message) {
+            $('#errors').append('<p>' + message +'</p>');
+        })
+    }
+
+    function hideErrors() {
+        $('#errors').addClass('hidden').empty();
+    }
+
+    function disableForm() {
+        $('button[type=submit]').prop('disabled', true)
+    }
+
+    function enableForm() {
+        $('button[type=submit]').prop('disabled', false)
     }
 
 

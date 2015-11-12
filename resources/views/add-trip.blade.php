@@ -11,47 +11,49 @@
 @endsection
 
 @section('content')
+    <div class="container trip-form">
+            <div id="errors" class="alert alert-danger hidden" role="alert">
+            </div>
 
-    <form action="form" method="post">
+            <form action="form" method="post">
 
-        <div class="form-group">
-            <label for="departureDate">Отправление</label>
-            <div id="departureDateDiv" data-date="{{ $today }}"></div>
-            <input type="hidden" id="departureDate">
-            {{--<input name="departureDate" type="date" class="form-control" id="departureDate" value="{{ $today }}">--}}
-        </div>
+                <div class="form-group">
+                    <label for="departureDate">Отправление</label>
+                    <div id="departureDateDiv" data-date="{{ $today }}"></div>
+                    <input name="departureDate" type="hidden" id="departureDate" value="{{ $today }}">
+                </div>
 
-        <div class="form-group">
-            <label for="regionSelect">Регион</label>
-            <select name="regionId" class="selectpicker form-control" id="regionSelect">
-                @foreach($regions as $region)
-                    <option value="{{ $region->id }}">{{ $region->title }}</option>
-                @endforeach
-            </select>
-        </div>
+                <div class="form-group">
+                    <label for="regionSelect">Регион</label>
+                    <select name="regionId" class="selectpicker form-control" id="regionSelect">
+                        @foreach($regions as $region)
+                            <option value="{{ $region->id }}">{{ $region->title }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-        <div class="form-group">
-            <label for="courierSelect">Курьер</label>
-            <select name="couriedId" class="selectpicker form-control" id="courierSelect">
-                @foreach($couriers as $courier)
-                    <option value="{{ $courier->id }}">{{ $courier->fullName() }}</option>
-                @endforeach
-            </select>
-        </div>
+                <div class="form-group">
+                    <label for="courierSelect">Курьер</label>
+                    <select name="courierId" class="selectpicker form-control" id="courierSelect">
+                        @foreach($couriers as $courier)
+                            <option value="{{ $courier->id }}">{{ $courier->fullName() }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-        <div class="form-group">
-            <label for="arrivalDate">Прибытие в регион</label>
-            <input name="arrivalDate" type="text" class="form-control" id="arrivalDate" disabled="disabled">
-        </div>
+                <div class="form-group">
+                    <label for="arrivalDate">Прибытие в регион</label>
+                    <input name="arrivalDate" type="text" class="form-control" id="arrivalDate" readonly="readonly">
+                </div>
 
-        <div class="form-group">
-            <label for="returnDate">Возвращение</label>
-            <input name="returnDate" type="text" class="form-control" id="returnDate" disabled="disabled" >
-        </div>
+                <div class="form-group">
+                    <label for="returnDate">Возвращение</label>
+                    <input name="returnDate" type="text" class="form-control" id="returnDate" readonly="readonly" >
+                </div>
 
-        {{ csrf_field() }}
+                {{ csrf_field() }}
 
-        <button type="submit" class="btn btn-default">Создать</button>
-    </form>
-
+                <button type="submit" class="btn btn-default">Создать</button>
+            </form>
+    </div>
 @endsection

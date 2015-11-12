@@ -24,18 +24,4 @@ class Trip extends Model
     }
 
 
-    public function setArrivalDate()
-    {
-        dd(Region::find($this->region_id)->time_to);
-        Region::find($this->region_id)->time_back;
-    }
-
-
-    public function setReturnDate()
-    {
-
-    }
-
-
-
 }

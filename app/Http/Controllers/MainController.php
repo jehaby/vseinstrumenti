@@ -33,9 +33,17 @@ class MainController extends Controller
     }
 
 
-    public function postForm(Request $request)
+    public function postForm(Request $request, TripFactory $tripFactory)
     {
-        dd($request->all());
+
+        $tripFactory->createTrip(
+            $request->input('courierId'),
+            $request->input('regionId'),
+            $request->input('departureDate')
+        );
+
+        return redirect('/')->with('message', 'Поездка успешно добавлена');
+
     }
 
 
@@ -51,14 +59,12 @@ class MainController extends Controller
         $arrivalDate = $arrivalDate->addHours($regions->find($regionId)->time_to);
 
         $returnDate = clone $arrivalDate;
-        $returnDate->addHours($regions->find($regionId)->time_back);
-
-        $courierIds = $this->getAvailableCouriers($departureDate, $returnDate);
+        $returnDate = $returnDate->addHours($regions->find($regionId)->time_back)->toDateString();
 
         return json_encode([
             'arrival_date' => $arrivalDate->toDateString(),
-            'return_date'  => $returnDate->toDateString(),
-            'available_couriers' => $this->getAvailableCouriers($departureDate, $returnDate)
+            'return_date'  => $returnDate,
+            'available_couriers' => $this->getAvailableCouriers($departureDate->toDateString(), $returnDate)
         ]);
 
 
@@ -67,21 +73,29 @@ class MainController extends Controller
 
     private function getAvailableCouriers($departureDate, $returnDate)
     {
+        return \DB::table('couriers')
+            ->select('id')->whereNotIn('id', function ($query) use ($departureDate, $returnDate) {
+                $query->select('courier_id')
+                    ->from('trips')
+                    ->whereBetween('departure_date', [$departureDate, $returnDate])
+                    ->orWhereBetween('return_date', [$departureDate, $returnDate])
+                    ->distinct();
+            })->lists('id');
 
-        return \DB::table('trips')
-            ->whereNotBetween('departure_date', [$departureDate, $returnDate])
-            ->whereNotBetween('return_date', [$departureDate, $returnDate])
-            ->distinct()->lists('courier_id');
-
-//        SELECT DISTINCT courier_id FROM trips
-//    WHERE (departure_date NOT BETWEEN '2015-10-01' AND '2015-10-30')
-//      AND (return_date NOT BETWEEN '2015-10-01' AND '2015-10-30');
-
+//        SELECT id FROM couriers
+//        WHERE id NOT IN (SELECT DISTINCT courier_id FROM trips
+//                         WHERE (departure_date BETWEEN '2015-11-01' AND '2015-11-03')
+//                         OR (return_date BETWEEN '2015-11-01' AND '2015-11-03')
+//                         );
     }
 
 
     public function getTest(Request $request)
     {
+
+
+        dd($this->getAvailableCouriers('2015-11-01', '2015-11-02'));
+
         $courierIds = \DB::table('couriers')->lists('id');
 
         $f = new TripFactory();
